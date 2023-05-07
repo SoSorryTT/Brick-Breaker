@@ -4,19 +4,18 @@ import java.util.Observable;
 import java.util.Random;
 import java.util.concurrent.CopyOnWriteArrayList;
 
-import javax.swing.JOptionPane;
-
 public class Game extends Observable {
 
     private int width = 600;
     private int height = 600;
+
+    private int life = 3;
 
     private Paddle paddle;
     private List<Bullet> bullets;
     private List<Brick> bricks;
     private Thread mainLoop;
     private boolean alive;
-    private int life = 1;
 
     public Game() {
         alive = true;
@@ -37,8 +36,6 @@ public class Game extends Observable {
                         e.printStackTrace();
                     }
                 }
-                // System.out.println("lost");
-                new OptionPaneLost();
             }
         };
         mainLoop.start();
@@ -46,13 +43,26 @@ public class Game extends Observable {
 
     public void tick() {
         moveBullets();
+        checkBullet();
     }
 
     private void moveBullets() {
         for(Bullet bullet : bullets) {
             bullet.move();
             handleBulletCollision(bullet);
-            // System.out.println(bullet.getSpeed());
+        }
+    }
+
+    public void checkBullet() {
+        if (bullets.isEmpty()) {
+            life--;
+            if (life <= 0) {
+                alive = false;
+                mainLoop.interrupt();
+            } else {
+                resetPaddle();
+                initBullet();
+            }
         }
     }
 
@@ -108,16 +118,18 @@ public class Game extends Observable {
             for (String brickShape : rowShapes) {
                 int x = startX + col * (brickWidth + margin);
                 int y = row * (brickHeight + margin) + padding;
-                Brick brick = new Brick(x, y, brickWidth, brickHeight);
-                if (!brickShape.equals("*")) {
-                    brick.setVisible(false);
-                }
+                Brick brick = new Brick(x, y, brickWidth, brickHeight, brickShape);
                 bricks.add(brick);
                 col++;
             }
             col = 0;
             row++;
         }
+    }
+
+    public void resetPaddle() {
+        paddle.setFreeze(true);
+        paddle.setX(250);
     }
 
     public void unfreezePaddle() {
@@ -151,18 +163,22 @@ public class Game extends Observable {
         if (bullet.getY() > height) {
             bullets.remove(bullet);
             bullet.freeze();
-
-            life -= 1;
-            // initBullet();
-            if (checkWin()) {
-
-            }
         }
         for (Brick brick : bricks) {
             if (brick.collidesWith(bullet)) {
-                bricks.remove(brick);
-                bullet.reverseY();
-                break;
+                if (brick.getType() == "*") {
+                    bricks.remove(brick);
+                    bullet.reverseY();
+                    break;
+                }
+                else if (brick.getType() == "-") {
+                    bullet.reverseY();
+                    break;
+                }
+                else if (brick.getType() == "%") {
+                    // drop item
+                    break;
+                }
             }
         }
     }

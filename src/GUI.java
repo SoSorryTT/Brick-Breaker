@@ -48,9 +48,13 @@ public class GUI extends JFrame implements Observer {
 
     class Renderer extends JPanel {
 
+        private final Image heartImage;
+
         public Renderer() {
             setDoubleBuffered(true);
             setPreferredSize(new Dimension(game.getWidth(), game.getHeight()));
+            ImageIcon icon = new ImageIcon("Images/heart.png");
+            heartImage = icon.getImage();
         }
 
         @Override
@@ -61,8 +65,11 @@ public class GUI extends JFrame implements Observer {
             g.fillRect(0, 0, game.getWidth(), game.getHeight());
 
             // Draw life that player has left
-            g.setColor(Color.WHITE);
-            g.drawString("Life left: "+game.getLife(), game.getWidth()-100, 20);
+            int heartSize = 25;
+            int heartPadding = 5;
+            for (int i = 0; i < game.getLife(); i++) {
+                g.drawImage(heartImage, 5 + i * (heartSize + heartPadding), 10, heartSize, heartSize, this);
+            }
 
             // Draw bullets
             g.setColor(Color.green);

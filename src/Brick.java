@@ -9,12 +9,18 @@ public class Brick {
     private boolean destroyed;
     private boolean visible = true;
 
-    public Brick(int x, int y, int width, int height) {
+    private String type;
+
+    public Brick(int x, int y, int width, int height, String type) {
         this.x = x;
         this.y = y;
         this.width = width;
         this.height = height;
         this.destroyed = false;
+        this.type = type;
+        if (!type.equals("*")) {
+            setVisible(false);
+        }
     }
 
     public void draw(Graphics2D g2) {
@@ -56,5 +62,9 @@ public class Brick {
 
     public void setVisible(boolean stage) {
         visible = stage;
+    }
+
+    public String getType() {
+        return type;
     }
 }
