@@ -82,7 +82,6 @@ public class GUI extends JFrame implements Observer {
             g.fillRect(paddle.getX(), paddle.getY(), paddle.getWidth(), paddle.getHeight());
 
             //Draw Brick
-
             for (Brick brick : game.getBricks()) {
                 if (brick.getType() == "*") {
                     g.setColor(Color.ORANGE);
@@ -90,6 +89,13 @@ public class GUI extends JFrame implements Observer {
                     g.setColor(Color.GRAY);
                 }
                 g.fillRect(brick.getX(), brick.getY(), brick.getWidth(), brick.getHeight());
+            }
+
+            //Draw Item
+            for (Item item : game.getItems()) {
+                ImageIcon icon = new ImageIcon("Images/" + item.getImage());
+                Image itemIcon = icon.getImage();
+                g.drawImage(itemIcon, item.getX(), item.getY(), item.getWidth(), item.getHeight(), this);
             }
         }
     }

@@ -1,3 +1,4 @@
+import javax.swing.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Observable;
@@ -10,10 +11,11 @@ public class Game extends Observable {
     private int height = 600;
 
     private int life = 3;
-    private int stage = 1;
+    private int stage = 0;
     private Paddle paddle;
     private List<Bullet> bullets;
     private List<Brick> bricks;
+    private List<Item> items;
     private Thread mainLoop;
     private boolean alive;
 
@@ -21,6 +23,7 @@ public class Game extends Observable {
         alive = true;
         bullets = new CopyOnWriteArrayList<Bullet>();
         bricks = new ArrayList<>();
+        items = new ArrayList<>();
         paddle = new Paddle(250, 550, 100, 10, 10);
         initBullet();
         initBrick();
@@ -95,6 +98,10 @@ public class Game extends Observable {
 
     public List<Brick> getBricks() {return bricks;}
 
+    public List<Item> getItems() {
+        return items;
+    }
+
     public Paddle getPaddle() {
         return paddle;
     }
@@ -134,6 +141,12 @@ public class Game extends Observable {
                 int x = startX + col * (brickWidth + margin);
                 int y = row * (brickHeight + margin) + padding;
                 Brick brick = new Brick(x, y, brickWidth, brickHeight, brickShape);
+                if (brickShape == "%") {
+                    ItemType itemType = generateRandomItemType();
+                    String imageName = itemType.getImageName();
+                    Item item = new Item(x + brickWidth/3, y, 20, 20, itemType, imageName);
+                    brick.setItem(item);
+                }
                 bricks.add(brick);
                 col++;
             }
@@ -158,7 +171,6 @@ public class Game extends Observable {
     }
 
     private void handleBulletCollision(Bullet bullet) {
-        System.out.println(bullet.getSpeed());
         if (bullet.getY() < 0) {
             bullet.reverseY();
         }
@@ -192,12 +204,15 @@ public class Game extends Observable {
                     break;
                 }
                 else if (brick.getType() == "%") {
-                    // drop item
+                    bullet.reverseY();
+                    items.add(brick.getItem());
+                    bricks.remove(brick);
                     break;
                 }
             }
         }
     }
+
 
     public void update() {
         setChanged();
@@ -213,5 +228,18 @@ public class Game extends Observable {
             alive = false;
         }
         return false;
+    }
+
+    private ItemType generateRandomItemType() {
+        Random random = new Random();
+        int randomNum = random.nextInt(100) + 1;
+
+        if (randomNum <= 50) {
+            return ItemType.Bullet_SPLIT;
+        } else if (randomNum <= 100) {
+            return ItemType.EXTRA_LIFE;
+        } else {
+            return null;
+        }
     }
 }

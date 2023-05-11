@@ -11,6 +11,8 @@ public class Brick {
 
     private String type;
 
+    private Item item;
+
     public Brick(int x, int y, int width, int height, String type) {
         this.x = x;
         this.y = y;
@@ -66,5 +68,13 @@ public class Brick {
 
     public String getType() {
         return type;
+    }
+
+    public void setItem(Item item){
+        this.item = item;
+    }
+
+    public Item getItem() {
+        return item;
     }
 }
