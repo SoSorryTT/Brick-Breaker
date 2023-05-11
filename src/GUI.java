@@ -80,9 +80,15 @@ public class GUI extends JFrame implements Observer {
             g.setColor(Color.white);
             Paddle paddle = game.getPaddle();
             g.fillRect(paddle.getX(), paddle.getY(), paddle.getWidth(), paddle.getHeight());
+
             //Draw Brick
-            g.setColor(Color.ORANGE);
+
             for (Brick brick : game.getBricks()) {
+                if (brick.getType() == "*") {
+                    g.setColor(Color.ORANGE);
+                } else if (brick.getType() == "-") {
+                    g.setColor(Color.GRAY);
+                }
                 g.fillRect(brick.getX(), brick.getY(), brick.getWidth(), brick.getHeight());
             }
         }

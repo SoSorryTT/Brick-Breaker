@@ -35,7 +35,7 @@ public class Bullet {
         this.y = y;
         this.dx = dx;
         this.dy = dy;
-        frozen = true; // freeze the bullet initially
+        frozen = true;
     }
 
     public int getX() {
@@ -47,11 +47,11 @@ public class Bullet {
     }
 
     public void unfreeze() {
-        this.frozen = false; // unfreeze the bullet
+        this.frozen = false;
     }
 
     public void freeze() {
-        this.frozen = true; // unfreeze the bullet
+        this.frozen = true;
     }
 
     public boolean isFrozen() {
@@ -59,11 +59,11 @@ public class Bullet {
     }
 
     public void reverseX() {
-        dx = -dx; // reverse the horizontal direction of the bullet
+        dx = -dx;
     }
 
     public void reverseY() {
-        dy = -dy; // reverse the vertical direction of the bullet
+        dy = -dy;
     }
 
     public boolean collidesWith(Paddle paddle) {
@@ -74,6 +74,7 @@ public class Bullet {
 
 
     public void setDirection(double direction) {
+        speed = 3;
         double radians = Math.toRadians(direction); // convert the angle from degrees to radians
         dx = (int) Math.round(speed * Math.sin(radians)); // calculate the new horizontal direction
         dy = (int) Math.round(speed * Math.cos(radians)); // calculate the new vertical direction

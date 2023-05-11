@@ -10,7 +10,7 @@ public class Game extends Observable {
     private int height = 600;
 
     private int life = 3;
-
+    private int stage = 1;
     private Paddle paddle;
     private List<Bullet> bullets;
     private List<Brick> bricks;
@@ -21,7 +21,7 @@ public class Game extends Observable {
         alive = true;
         bullets = new CopyOnWriteArrayList<Bullet>();
         bricks = new ArrayList<>();
-        paddle = new Paddle(250, 550, 100, 10, 5);
+        paddle = new Paddle(250, 550, 100, 10, 10);
         initBullet();
         initBrick();
         mainLoop = new Thread() {
@@ -44,6 +44,21 @@ public class Game extends Observable {
     public void tick() {
         moveBullets();
         checkBullet();
+        checkBrick();
+    }
+
+    private void checkBrick() {
+        if (bricks.isEmpty()) {
+            stage++;
+            if (stage > BrickShape.values().length - 1) {
+                alive = false;
+                mainLoop.interrupt();
+            } else {
+                resetPaddle();
+                initBullet();
+                initBrick();
+            }
+        }
     }
 
     private void moveBullets() {
@@ -104,7 +119,7 @@ public class Game extends Observable {
 
 
     public void initBrick() {
-        String[][] brickShapes = BrickShape.values()[new Random().nextInt(BrickShape.values().length)].getBrickShapes();
+        String[][] brickShapes = BrickShape.values()[stage].getBrickShapes();
         int brickWidth = 50;
         int brickHeight = 15;
         int padding = 50;
@@ -143,6 +158,7 @@ public class Game extends Observable {
     }
 
     private void handleBulletCollision(Bullet bullet) {
+        System.out.println(bullet.getSpeed());
         if (bullet.getY() < 0) {
             bullet.reverseY();
         }
@@ -193,7 +209,6 @@ public class Game extends Observable {
     }
 
     private boolean checkWin() {
-        // System.out.println(board.numUncover);
         if (life == 0) {
             alive = false;
         }
