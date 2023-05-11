@@ -9,6 +9,8 @@ public class Item {
     private ItemType type;
     private String image;
 
+    private boolean hitPaddle;
+
     public Item(int x, int y, int width, int height, ItemType type, String image) {
         this.x = x;
         this.y = y;
@@ -16,6 +18,7 @@ public class Item {
         this.height = height;
         this.type = type;
         this.image = image;
+        this.hitPaddle = false;
     }
 
     public int getX() {
@@ -39,12 +42,28 @@ public class Item {
     }
 
     public void move() {
-        // Implement movement logic if necessary
+        y += 5;
     }
 
     public String getImage() {
         return image;
     }
 
+    public void setHitPaddle(boolean hitPaddle) {
+        this.hitPaddle = hitPaddle;
+    }
 
+    public boolean isHitPaddle() {
+        return hitPaddle;
+    }
+
+    public void setY(int y) {
+        this.y = y;
+    }
+
+    public boolean collidesWith(Paddle paddle) {
+        Rectangle bulletRect = new Rectangle(x, y, width, height);
+        Rectangle paddleRect = new Rectangle(paddle.getX(), paddle.getY(), paddle.getWidth(), paddle.getHeight());
+        return bulletRect.intersects(paddleRect);
+    }
 }

@@ -95,7 +95,9 @@ public class GUI extends JFrame implements Observer {
             for (Item item : game.getItems()) {
                 ImageIcon icon = new ImageIcon("Images/" + item.getImage());
                 Image itemIcon = icon.getImage();
-                g.drawImage(itemIcon, item.getX(), item.getY(), item.getWidth(), item.getHeight(), this);
+                if (!item.isHitPaddle()) {
+                    g.drawImage(itemIcon, item.getX(), item.getY(), item.getWidth(), item.getHeight(), this);
+                }
             }
         }
     }

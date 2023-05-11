@@ -48,6 +48,8 @@ public class Game extends Observable {
         moveBullets();
         checkBullet();
         checkBrick();
+        moveItem();
+        checkItem();
     }
 
     private void checkBrick() {
@@ -63,6 +65,24 @@ public class Game extends Observable {
             }
         }
     }
+    private void moveItem() {
+        if (items.isEmpty()) {
+            return;
+        }
+        for(Item item: items) {
+            item.move();
+            handleItemCollision(item);
+        }
+    }
+
+    private void checkItem() {
+        for( Item item: items) {
+            if (item.getY() > height) {
+                bullets.remove(item);
+            }
+        }
+    }
+
 
     private void moveBullets() {
         for(Bullet bullet : bullets) {
@@ -83,6 +103,7 @@ public class Game extends Observable {
             }
         }
     }
+
 
     public int getWidth() {
         return width;
@@ -213,6 +234,19 @@ public class Game extends Observable {
         }
     }
 
+    public  void handleItemCollision(Item item) {
+        if (item.collidesWith(paddle)) {
+            if (item.getType() == ItemType.EXTRA_LIFE) {
+                life += 1;
+            }
+            else if (item.getType() == ItemType.Bullet_SPLIT) {
+                // not implement yet
+            }
+            item.setHitPaddle(true);
+            item.setY(height);
+        }
+    }
+
 
     public void update() {
         setChanged();
@@ -234,7 +268,7 @@ public class Game extends Observable {
         Random random = new Random();
         int randomNum = random.nextInt(100) + 1;
 
-        if (randomNum <= 50) {
+        if (randomNum <= 0) {
             return ItemType.Bullet_SPLIT;
         } else if (randomNum <= 100) {
             return ItemType.EXTRA_LIFE;
