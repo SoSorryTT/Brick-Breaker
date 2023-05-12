@@ -79,8 +79,8 @@ public class Bullet {
     public void setDirection(double direction) {
         speed = 3;
         double radians = Math.toRadians(direction); // convert the angle from degrees to radians
-        dx = (int) Math.round(speed * Math.sin(radians)); // calculate the new horizontal direction
-        dy = (int) Math.round(speed * Math.cos(radians)); // calculate the new vertical direction
+        dx = (int) Math.round(speed * Math.cos(radians)); // calculate the new horizontal direction
+        dy = (int) Math.round(speed * Math.sin(radians)); // calculate the new vertical direction
     }
 
     public void setSpeed(int speed) {

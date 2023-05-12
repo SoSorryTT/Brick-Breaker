@@ -281,7 +281,7 @@ public class Game extends Observable {
         Random random = new Random();
         int randomNum = random.nextInt(100) + 1;
 
-        if (randomNum <= 150) {
+        if (randomNum <= 50) {
             return ItemType.Bullet_SPLIT;
         } else if (randomNum <= 100) {
             return ItemType.EXTRA_LIFE;
