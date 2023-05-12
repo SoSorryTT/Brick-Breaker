@@ -1,12 +1,33 @@
 # Brick-Breaker
-This is SSD lab project 2023
+This is SSD lab project 2023. This is a simple implementation of the classic brick breaker game using Java and Swing.
+
+## Features
+
+- Multiple stages with increasing difficulty.
+- Paddle movement using the left and right arrow keys or `A` and `D` keys.
+- Bullets that can be unfrozen and shot to destroy bricks.
+- Various types of bricks with different properties.
+- Power-up items that can be collected to gain extra lives or special abilities.
+- Visual indicators for the remaining lives and current stage.
 
 ## Special requirement
 - This project needs latest version of Java due to the lambda expression that's use a lot on codebase, and it's not supported by older version of Java.
 
+## Guidelines
+Run the Brick breaker application
+
+1. Clone this repository
+2. Go to release directory
+3. Start the GUI.java
+4. Once the java app starts, press `SPACE` button, which should start Brick breaker game.
+5. You can click `X` button at the top of window to close the game.
+
 ## Basic Turtorial
 - key(`SPACE`) to start the game
-- Use the Arrow key to control the paddle
+- Use the Arrow key or key`A`, key`D` to control the paddle
+
+## License
+This project is licensed under the [MIT License](LICENSE).
 
 ## Our team member
 1. Tanin Pewluangsawat 6310545990
