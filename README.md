@@ -11,7 +11,7 @@ This is SSD lab project 2023. This is a simple implementation of the classic bri
 - Visual indicators for the remaining lives and current stage.
 
 ## Special requirement
-- This project needs latest version of Java due to the lambda expression that's use a lot on codebase, and it's not supported by older version of Java.
+- This project needs latest version of Java , and it's not supported by older version of Java.
 
 ## Guidelines
 Run the Brick breaker application
