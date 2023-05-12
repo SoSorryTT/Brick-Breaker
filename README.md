@@ -8,7 +8,7 @@ This is SSD lab project 2023. This is a simple implementation of the classic bri
 - Bullets that can be unfrozen and shot to destroy bricks.
 - Various types of bricks with different properties.
 - Power-up items that can be collected to gain extra lives or special abilities.
-- Visual indicators for the remaining lives and current stage.
+- Visual indicators for the remaining lives and current stage
 
 ## Special requirement
 - This project needs latest version of Java , and it's not supported by older version of Java.
