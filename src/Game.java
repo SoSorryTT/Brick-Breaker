@@ -17,13 +17,15 @@ public class Game extends Observable {
     private List<Brick> bricks;
     private List<Item> items;
     private Thread mainLoop;
+    private BulletFactory bulletFactory;
     private boolean alive;
 
     public Game() {
         alive = true;
-        bullets = new CopyOnWriteArrayList<Bullet>();
+        bullets = new ArrayList<Bullet>();
         bricks = new ArrayList<>();
         items = new ArrayList<>();
+        bulletFactory = new BulletFactory();
         paddle = new Paddle(250, 550, 100, 10, 10);
         initBullet();
         initBrick();
@@ -50,6 +52,81 @@ public class Game extends Observable {
         checkBrick();
         moveItem();
         checkItem();
+        cleanupBullets();
+    }
+
+    public void initBullet() {
+        int x = paddle.getX() + paddle.getWidth() / 2;
+        int y = paddle.getY() - 10;
+        Bullet bullet = bulletFactory.getBullet(x, y, 0, -10);
+        bullets.add(bullet);
+    }
+
+
+    public void initBrick() {
+        String[][] brickShapes = BrickShape.values()[stage].getBrickShapes();
+        int brickWidth = 50;
+        int brickHeight = 15;
+        int padding = 50;
+        int margin = 5;
+        int numCols = brickShapes[0].length;
+        int totalWidth = numCols * (brickWidth + margin) - margin;
+        int startX = (width - totalWidth) / 2;
+        int row = 0;
+        int col = 0;
+        for (String[] rowShapes : brickShapes) {
+            for (String brickShape : rowShapes) {
+                int x = startX + col * (brickWidth + margin);
+                int y = row * (brickHeight + margin) + padding;
+                Brick brick = new Brick(x, y, brickWidth, brickHeight, brickShape);
+                if (brickShape == "%") {
+                    ItemType itemType = generateRandomItemType();
+                    String imageName = itemType.getImageName();
+                    Item item = new Item(x + brickWidth/3, y, 20, 20, itemType, imageName);
+                    brick.setItem(item);
+                }
+                bricks.add(brick);
+                col++;
+            }
+            col = 0;
+            row++;
+        }
+    }
+    private void moveItem() {
+        if (items.isEmpty()) {
+            return;
+        }
+        for(Item item: items) {
+            item.move();
+            handleItemCollision(item);
+        }
+    }
+
+    private void moveBullets() {
+        for(Bullet bullet : bullets) {
+            bullet.move();
+            handleBulletCollision(bullet);
+        }
+    }
+
+    public void movePaddleLeft() {
+        if (paddle.getX()-paddle.getVelocity() > 0) {
+            paddle.moveLeft();
+        }
+    }
+
+    public void movePaddleRight() {
+        if (paddle.getX()+ paddle.getWidth()+paddle.getVelocity() < width) {
+            paddle.moveRight();
+        }
+    }
+
+    private void checkItem() {
+        for( Item item: items) {
+            if (item.getY() > height) {
+                bullets.remove(item);
+            }
+        }
     }
 
     private void checkBrick() {
@@ -63,31 +140,6 @@ public class Game extends Observable {
                 initBullet();
                 initBrick();
             }
-        }
-    }
-    private void moveItem() {
-        if (items.isEmpty()) {
-            return;
-        }
-        for(Item item: items) {
-            item.move();
-            handleItemCollision(item);
-        }
-    }
-
-    private void checkItem() {
-        for( Item item: items) {
-            if (item.getY() > height) {
-                bullets.remove(item);
-            }
-        }
-    }
-
-
-    private void moveBullets() {
-        for(Bullet bullet : bullets) {
-            bullet.move();
-            handleBulletCollision(bullet);
         }
     }
 
@@ -127,55 +179,6 @@ public class Game extends Observable {
         return paddle;
     }
 
-    public void movePaddleLeft() {
-        if (paddle.getX()-paddle.getVelocity() > 0) {
-            paddle.moveLeft();
-        }
-    }
-
-    public void movePaddleRight() {
-        if (paddle.getX()+ paddle.getWidth()+paddle.getVelocity() < width) {
-            paddle.moveRight();
-        }
-    }
-
-    public void initBullet() {
-        int x = paddle.getX() + paddle.getWidth() / 2;
-        int y = paddle.getY() - 10;
-        bullets.add(new Bullet(x, y, 0, -10));
-    }
-
-
-    public void initBrick() {
-        String[][] brickShapes = BrickShape.values()[stage].getBrickShapes();
-        int brickWidth = 50;
-        int brickHeight = 15;
-        int padding = 50;
-        int margin = 5;
-        int numCols = brickShapes[0].length;
-        int totalWidth = numCols * (brickWidth + margin) - margin;
-        int startX = (width - totalWidth) / 2;
-        int row = 0;
-        int col = 0;
-        for (String[] rowShapes : brickShapes) {
-            for (String brickShape : rowShapes) {
-                int x = startX + col * (brickWidth + margin);
-                int y = row * (brickHeight + margin) + padding;
-                Brick brick = new Brick(x, y, brickWidth, brickHeight, brickShape);
-                if (brickShape == "%") {
-                    ItemType itemType = generateRandomItemType();
-                    String imageName = itemType.getImageName();
-                    Item item = new Item(x + brickWidth/3, y, 20, 20, itemType, imageName);
-                    brick.setItem(item);
-                }
-                bricks.add(brick);
-                col++;
-            }
-            col = 0;
-            row++;
-        }
-    }
-
     public void resetPaddle() {
         paddle.setFreeze(true);
         paddle.setX(250);
@@ -209,10 +212,6 @@ public class Game extends Observable {
             }
             bullet.setDirection(direction);
         }
-        if (bullet.getY() > height) {
-            bullets.remove(bullet);
-            bullet.freeze();
-        }
         for (Brick brick : bricks) {
             if (brick.collidesWith(bullet)) {
                 if (brick.getType() == "*") {
@@ -240,17 +239,31 @@ public class Game extends Observable {
                 life += 1;
             }
             else if (item.getType() == ItemType.Bullet_SPLIT) {
-                // not implement yet
+                Bullet baseBullet = bullets.get(0);
+                Bullet bullet1 = bulletFactory.getBullet(baseBullet.getX(), baseBullet.getY(), baseBullet.getDx() + 5, baseBullet.getDy());
+                Bullet bullet2 = bulletFactory.getBullet(baseBullet.getX(), baseBullet.getY(), baseBullet.getDx() - 5, baseBullet.getDy());
+                bullet1.unfreeze();
+                bullet1.setSpeed(3);
+                bullet2.unfreeze();
+                bullet2.setSpeed(3);
+                bullets.add(bullet1);
+                bullets.add(bullet2);
             }
             item.setHitPaddle(true);
             item.setY(height);
         }
     }
 
-
-    public void update() {
-        setChanged();
-        notifyObservers();
+    private void cleanupBullets() {
+        List<Bullet> toRemove = new ArrayList<Bullet>();
+        for(Bullet bullet : bullets) {
+            if(bullet.getY() > width) {
+                toRemove.add(bullet);
+            }
+        }
+        for(Bullet bullet : toRemove) {
+            bullets.remove(bullet);
+        }
     }
 
     public int getLife() {
@@ -268,12 +281,16 @@ public class Game extends Observable {
         Random random = new Random();
         int randomNum = random.nextInt(100) + 1;
 
-        if (randomNum <= 0) {
+        if (randomNum <= 150) {
             return ItemType.Bullet_SPLIT;
         } else if (randomNum <= 100) {
             return ItemType.EXTRA_LIFE;
         } else {
             return null;
         }
+    }
+    public void update() {
+        setChanged();
+        notifyObservers();
     }
 }

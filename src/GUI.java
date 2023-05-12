@@ -24,9 +24,7 @@ public class GUI extends JFrame implements Observer {
 
         setLayout(new BorderLayout());
         add(renderer);
-
-
-
+        
         setResizable(false);
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         pack();

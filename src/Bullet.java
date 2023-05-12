@@ -15,7 +15,6 @@ public class Bullet {
 
     public Bullet(int x, int y, int dx, int dy) {
         reset(x, y, dx, dy);
-        // Creating a bullet takes up your computer resources
         try {
             Thread.sleep(20);
         } catch (InterruptedException e) {
@@ -46,16 +45,20 @@ public class Bullet {
         return y;
     }
 
+    public int getDx() {
+        return dx;
+    }
+
+    public int getDy() {
+        return dy;
+    }
+
     public void unfreeze() {
         this.frozen = false;
     }
 
     public void freeze() {
         this.frozen = true;
-    }
-
-    public boolean isFrozen() {
-        return frozen;
     }
 
     public void reverseX() {
@@ -80,7 +83,7 @@ public class Bullet {
         dy = (int) Math.round(speed * Math.cos(radians)); // calculate the new vertical direction
     }
 
-    public int getSpeed() {
-        return speed;
+    public void setSpeed(int speed) {
+        this.speed = speed;
     }
 }
