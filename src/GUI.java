@@ -27,6 +27,7 @@ public class GUI extends JFrame implements Observer {
         
         setResizable(false);
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
+
         pack();
     }
 

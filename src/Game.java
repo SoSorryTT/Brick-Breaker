@@ -19,6 +19,7 @@ public class Game extends Observable {
     private Thread mainLoop;
     private BulletFactory bulletFactory;
     private boolean alive;
+    private boolean win = false;
 
     public Game() {
         alive = true;
@@ -41,6 +42,7 @@ public class Game extends Observable {
                         e.printStackTrace();
                     }
                 }
+                new OptionPane(win);
             }
         };
         mainLoop.start();
@@ -74,10 +76,16 @@ public class Game extends Observable {
         int startX = (width - totalWidth) / 2;
         int row = 0;
         int col = 0;
+
+        // Mock up for demo win
+        // Brick brick = new Brick(275, 50, brickWidth, brickHeight, "*");
+        // bricks.add(brick);
         for (String[] rowShapes : brickShapes) {
             for (String brickShape : rowShapes) {
                 int x = startX + col * (brickWidth + margin);
                 int y = row * (brickHeight + margin) + padding;
+                System.out.println(x);
+                System.out.println(y);
                 Brick brick = new Brick(x, y, brickWidth, brickHeight, brickShape);
                 if (brickShape == "%") {
                     ItemType itemType = generateRandomItemType();
@@ -134,11 +142,12 @@ public class Game extends Observable {
             stage++;
             if (stage > BrickShape.values().length - 1) {
                 alive = false;
+                win = true;
                 mainLoop.interrupt();
             } else {
-                resetPaddle();
-                initBullet();
-                initBrick();
+                // resetPaddle();
+                // initBullet();
+                // initBrick();
             }
         }
     }
@@ -268,13 +277,6 @@ public class Game extends Observable {
 
     public int getLife() {
         return life;
-    }
-
-    private boolean checkWin() {
-        if (life == 0) {
-            alive = false;
-        }
-        return false;
     }
 
     private ItemType generateRandomItemType() {
