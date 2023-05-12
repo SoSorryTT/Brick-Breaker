@@ -26,6 +26,12 @@ Run the Brick breaker application
 - key(`SPACE`) to start the game
 - Use the Arrow key or key`A`, key`D` to control the paddle
 
+## Win and Lose condition
+### Win condition
+The objective of the game is to break all of the bricks to achieve victory.
+### Lose condition
+The loss condition in the game is triggered when the player's HEART reaches zero.
+
 ## License
 This project is licensed under the [MIT License](LICENSE).
 
