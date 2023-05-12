@@ -30,7 +30,8 @@ Run the Brick breaker application
 ### Win condition
 The objective of the game is to break all of the bricks to achieve victory.
 ### Lose condition
-The loss condition in the game is triggered when the player's HEART reaches zero.
+The loss condition in the game is triggered when the player's <img src="https://github.com/SoSorryTT/Brick-Breaker/blob/master/Images/heart.png" width="15" height="15"> reaches zero.  
+<!-- <img src="https://github.com/SoSorryTT/Brick-Breaker/blob/master/Images/heart.png"> -->
 
 ## License
 This project is licensed under the [MIT License](LICENSE).
